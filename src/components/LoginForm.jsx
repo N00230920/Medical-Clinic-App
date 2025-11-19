@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function LoginForm({loggedIn, onLogin}) {
+export default function LoginForm({onLogin}) {
   const [form, setForm] = useState({});
 
   const handleForm = (e) => {

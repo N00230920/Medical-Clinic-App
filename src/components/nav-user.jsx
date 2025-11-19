@@ -28,7 +28,8 @@ import {
 } from "@/components/ui/sidebar"
 
 export function NavUser({
-  user
+  user,
+  onLogin
 }) {
   const { isMobile } = useSidebar()
 
@@ -72,23 +73,9 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
+        
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <IconUserCircle />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconCreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconNotification />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onLogin(false)}>
               <IconLogout />
               Log out
             </DropdownMenuItem>
