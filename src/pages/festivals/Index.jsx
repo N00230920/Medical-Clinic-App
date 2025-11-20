@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import {Eye, Pencil} from "lucide-react";
+import DeleteBtn from "@/components/DeleteBtn";
+
 
 import {
   Table,
@@ -12,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Toaster } from "sonner";
 
 // import {
 //   Card,
@@ -25,6 +29,11 @@ import {
 
 export default function Index() {
   const [festivals, setFestivals] = useState([]);
+
+  const navigate = useNavigate();
+  const location = useLocation(); 
+
+  let message = location.state.message;
 
   useEffect(() => {
     const fetchFestivals = async () => {
@@ -45,29 +54,15 @@ export default function Index() {
     fetchFestivals();
   }, []);
 
-  // const festivalCards = festivals.map((festival) => {
-  //   return (
-  //     <Card key={festival.id}>
-  //       <CardHeader>
-  //         <CardTitle>{festival.title}</CardTitle>
-  //         <CardDescription>{festival.description}</CardDescription>
-  //         {/* <CardAction>Card Action</CardAction> */}
-  //       </CardHeader>
-  //       {/* <CardContent>
-  //         <p>Card Content</p>
-  //       </CardContent> */}
-  //       <CardFooter>
-  //         <Button
-  //           asChild
-  //           variant='outline'
-  //         ><Link size='md' to={`/festivals/${festival.id}`}>View</Link></Button>
-  //       </CardFooter>
-  //     </Card>
-  //   );
-  // });
+  const onDeleteCallback = (id) => {
+    setFestivals(festivals.filter(festival=>festival.id !== id));
+  };
+
+
 
   return (
     <>
+    <Toaster/>
       <Button
         asChild
         variant='outline'

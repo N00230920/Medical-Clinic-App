@@ -1,10 +1,11 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
+import { AuthProvider } from './hooks/useAuth';
 
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { AppSidebar } from '@/components/app-sidebar';
-import { SiteHeader } from '@/components/site-header';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
+import { AppSidebar } from "@/components/app-sidebar"
+import { SiteHeader } from "@/components/site-header"
 
 import Navbar from '@/components/Navbar';
 import Home from '@/pages/Home';
@@ -15,22 +16,23 @@ import FestivalsCreate from '@/pages/festivals/Create';
 import FestivalsEdit from '@/pages/festivals/Edit';
 
 
+
+
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     let token = localStorage.getItem("token");
 
-    if(token){
+    if (token) {
       setLoggedIn(true);
     }
-
-  }, []);
+  }, [])
 
   const onLogin = (auth, token) => {
     setLoggedIn(auth);
 
-    if(auth){
+    if (auth) {
       localStorage.setItem('token', token)
     }
     else {
@@ -38,23 +40,9 @@ export default function App() {
     }
   };
 
-  // return (
-  //   <>
-  //     <Router>
-  //       <Navbar onLogin={onLogin} loggedIn={loggedIn} />
-  //       <Routes>
-  //         <Route path='/' element={<Home onLogin={onLogin} loggedIn={loggedIn} />} />
-
-  //         <Route path="/festivals" element={<FestivalsIndex />} />
-  //         <Route path="/festivals/:id" element={<FestivalsShow loggedIn={loggedIn} />} />
-
-  //       </Routes>
-  //     </Router>
-  //   </>
-  // )
-
   return (
     <Router>
+      <AuthProvider>
       <SidebarProvider
         style={{
           "--sidebar-width": "calc(var(--spacing) * 72)",
@@ -81,17 +69,15 @@ export default function App() {
                     path="/festivals/:id"
                     element={<FestivalsShow loggedIn={loggedIn} />}
                   />
-                  <Route
-                    path="/festivals/:id/edit"
-                    element={<FestivalsEdit />}
-                  />
                   <Route path="/festivals/create" element={<FestivalsCreate />} />
+                  <Route path="/festivals/:id/edit" element={<FestivalsEdit />} />
                 </Routes>
               </div>
             </div>
           </div>
         </SidebarInset>
       </SidebarProvider>
+      </AuthProvider>
     </Router>
   );
 }

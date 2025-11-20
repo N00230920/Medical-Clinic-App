@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useAuth } from "@/hooks/useAuth";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,8 +15,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function LoginForm({onLogin}) {
+export default function LoginForm() {
   const [form, setForm] = useState({});
+  const { onLogin } = useAuth();
 
   const handleForm = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -44,7 +46,10 @@ export default function LoginForm({onLogin}) {
     fetchLogin();
 
     console.log(form);
+
+    onLogin(form.email, form.password);
   };
+
 
   return (
     <Card className="w-full max-w-md">

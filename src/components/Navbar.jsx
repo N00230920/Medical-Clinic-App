@@ -1,13 +1,13 @@
 import { Link } from 'react-router';
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
+    NavigationMenu,
+    NavigationMenuContent,
+    NavigationMenuIndicator,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger,
+    NavigationMenuViewport,
 } from "@/components/ui/navigation-menu"
 
 export default function Navbar() {
@@ -17,7 +17,7 @@ export default function Navbar() {
                 <NavigationMenuItem>
                     <NavigationMenuLink asChild><Link to=''>Home</Link></NavigationMenuLink>
                 </NavigationMenuItem>
-               <NavigationMenuItem className="hidden md:block">
+                <NavigationMenuItem className="hidden md:block">
                 <NavigationMenuTrigger>Festivals</NavigationMenuTrigger>
                     <NavigationMenuContent>
                         <ul className="grid w-[200px] gap-4">

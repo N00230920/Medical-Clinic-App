@@ -18,6 +18,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+
 } from "@/components/ui/sidebar"
 
 const data = {
@@ -78,7 +79,7 @@ export function AppSidebar({
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} onLogin={onLogin}  />
+        <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
   );
