@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import axios from 'axios';
+import axios from "@/config/api";
 import { useNavigate } from 'react-router';
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Create() {
     const [form, setForm] = useState({
-        title: "",
-        description: "",
-        city: "",
-        start_date: "",
-        end_date: ""
+        first_name: "",
+        last_name: "",
+        specialisation: "",
+        phone: "",
+        email: ""
     });
     const navigate = useNavigate();
+    const { token } = useAuth();
 
     const handleChange = (e) => {
         setForm({
@@ -21,12 +23,11 @@ export default function Create() {
         });
     };
 
-    const createFestival = async () => {
-        const token = localStorage.getItem("token");
+    const createDoctor = async () => {
 
         const options = {
             method: "POST",
-            url: `https://festivals-api.vercel.app/festivals`,
+            url: `/doctors`,
             headers: {
                 Authorization: `Bearer ${token}`
             },
@@ -36,7 +37,10 @@ export default function Create() {
         try {
             let response = await axios.request(options);
             console.log(response.data);
-            navigate('/festivals', {state:{message:`Festival "${response.data.title}" created successfully`}});
+            navigate('/doctors', { state: { 
+                type: 'success',
+                message: `Doctor "${response.data.name}" created successfully` 
+            }});
         } catch (err) {
             console.log(err);
         }
@@ -46,50 +50,50 @@ export default function Create() {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(form);
-        createFestival();
+        createDoctor();
     };
 
   return (
     <>
-        <h1>Create a new Festival</h1>
+        <h1>Create a new Doctor</h1>
         <form onSubmit={handleSubmit}>
             <Input 
                 type="text" 
-                placeholder="Title" 
-                name="title" 
-                value={form.title} 
+                placeholder="First Name" 
+                name="first_name" 
+                value={form.first_name} 
                 onChange={handleChange} 
             />
             <Input 
                 className="mt-2"
                 type="text" 
-                placeholder="Description" 
-                name="description" 
-                value={form.description} 
+                placeholder="Last Name" 
+                name="last_name" 
+                value={form.last_name} 
                 onChange={handleChange} 
             />
             <Input 
                 className="mt-2"
                 type="text" 
-                placeholder="City" 
-                name="city" 
-                value={form.city} 
+                placeholder="Specialisation" 
+                name="specialisation" 
+                value={form.specialisation} 
                 onChange={handleChange} 
             />
             <Input 
                 className="mt-2"
                 type="text" 
-                placeholder="Start Date" 
-                name="start_date" 
-                value={form.start_date} 
+                placeholder="Phone" 
+                name="phone" 
+                value={form.phone} 
                 onChange={handleChange} 
             />
             <Input 
                 className="mt-2"
-                type="text" 
-                placeholder="End Date" 
-                name="end_date" 
-                value={form.end_date} 
+                type="email" 
+                placeholder="Email" 
+                name="email" 
+                value={form.email} 
                 onChange={handleChange} 
             />
             <Button 

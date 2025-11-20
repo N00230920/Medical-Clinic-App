@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import {
   IconConfetti,
   IconTheater,
@@ -6,10 +6,14 @@ import {
   IconMicrophone2,
   IconInnerShadowTop,
   IconMusic,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
+import { useLocation } from "react-router";
+import { useEffect } from "react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -18,8 +22,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 const data = {
   user: {
@@ -34,8 +37,8 @@ const data = {
       icon: IconDashboard,
     },
     {
-      title: "Festivals",
-      url: "/festivals",
+      title: "Doctors",
+      url: "/doctors",
       icon: IconConfetti,
     },
     {
@@ -53,34 +56,56 @@ const data = {
       url: "#",
       icon: IconMusic,
     },
-  ]
-}
+  ],
+};
 
-export function AppSidebar({
-  onLogin,
-  loggedIn,
-  ...props
-}) {
+export function AppSidebar({ ...props }) {
+  const location = useLocation();
+
+  console.log(location);
+
+  let message = location.state?.message;
+  let type = location.state?.type;
+
+  useEffect(() => {
+    if (message) {
+      if (type === 'error') {
+        toast.error(message);
+      }
+      else if (type === 'success') {
+        toast.success(message);
+      } else {
+        toast(message);
+      }
+    }
+  }, [message]);
+
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
-              <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
-    </Sidebar>
+    <>
+      <Toaster position="top-center" richColors />
+      <Sidebar collapsible="offcanvas" {...props}>
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                className="data-[slot=sidebar-menu-button]:!p-1.5"
+              >
+                <a href="#">
+                  <IconInnerShadowTop className="!size-5" />
+                  <span className="text-base font-semibold">Acme Inc.</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent>
+          <NavMain items={data.navMain} />
+        </SidebarContent>
+        <SidebarFooter>
+          <NavUser user={data.user} />
+        </SidebarFooter>
+      </Sidebar>
+    </>
   );
 }

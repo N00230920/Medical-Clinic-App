@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import axios from "@/config/api";
 import { useAuth } from "@/hooks/useAuth";
 
 import { Button } from "@/components/ui/button";
@@ -25,31 +25,10 @@ export default function LoginForm() {
 
   const submitForm = (e) => {
     e.preventDefault();
-
-    const fetchLogin = async () => {
-      const options = {
-        method: "POST",
-        url: "https://festivals-api.vercel.app/login",
-        data: form
-      };
-
-      try {
-        let response = await axios.request(options);
-        console.log(response.data);
-
-        onLogin(true, response.data.token);
-      } catch (err) {
-        console.log(err.response.data);
-      }
-    };
-
-    fetchLogin();
-
     console.log(form);
 
     onLogin(form.email, form.password);
   };
-
 
   return (
     <Card className="w-full max-w-md">
