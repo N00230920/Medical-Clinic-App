@@ -6,6 +6,7 @@ import {
   IconMicrophone2,
   IconInnerShadowTop,
   IconMusic,
+  IconListCheck,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
@@ -13,6 +14,7 @@ import { useLocation } from "react-router";
 import { useEffect } from "react";
 
 import { NavMain } from "@/components/nav-main";
+import { NavExamples } from "@/components/nav-examples";
 import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
@@ -55,6 +57,13 @@ const data = {
       title: "Shows",
       url: "#",
       icon: IconMusic,
+    },
+  ],
+  form: [
+    {
+      name: "Forms & Validation",
+      url: "/forms",
+      icon: IconListCheck,
     },
   ],
 };
@@ -101,6 +110,7 @@ export function AppSidebar({ ...props }) {
         </SidebarHeader>
         <SidebarContent>
           <NavMain items={data.navMain} />
+          <NavExamples items={data.examples} />
         </SidebarContent>
         <SidebarFooter>
           <NavUser user={data.user} />

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "@/config/api";
 import { useAuth } from "@/hooks/useAuth";
 
 import { Button } from "@/components/ui/button";
@@ -68,7 +67,12 @@ export default function LoginForm() {
         </form>
       </CardContent>
       <CardFooter className="flex-col gap-2">
-        <Button variant='outline' onClick={submitForm} type="submit" className="w-full">
+        <Button
+          variant="outline"
+          onClick={submitForm}
+          type="submit"
+          className="w-full"
+        >
           Login
         </Button>
       </CardFooter>
