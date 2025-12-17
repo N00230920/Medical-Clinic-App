@@ -3,10 +3,40 @@ import { Trash } from "lucide-react";
 import axios from "@/config/api";
 import { useState } from "react";
 
-export default function DeleteBtn({ resource, id, onDeleteCallback }) {
+export default function DeleteBtn({ resource, id, onDeleteCallback, cascade = [] }) {
     const [isDeleting, setIsDeleting] = useState(false);
 
     let token = localStorage.getItem('token');
+
+    const deleteCascade = async () => {
+        if (!cascade.length) return;
+
+        for (const item of cascade) {
+            if (!item?.resource || !item?.matchField) continue;
+            const listResponse = await axios.request({
+                method: "GET",
+                url: `/${item.resource}`,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            const related = (listResponse.data || []).filter(
+                (entry) => String(entry[item.matchField]) === String(id)
+            );
+            if (!related.length) continue;
+            await Promise.all(
+                related.map((entry) =>
+                    axios.request({
+                        method: "DELETE",
+                        url: `/${item.resource}/${entry.id}`,
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+                )
+            );
+        }
+    };
 
     const onDelete = async () => {
         const options = {
@@ -18,12 +48,13 @@ export default function DeleteBtn({ resource, id, onDeleteCallback }) {
       };
 
       try {
+        await deleteCascade();
         let response = await axios.request(options);
         console.log(response.data);
         if (onDeleteCallback) {
             onDeleteCallback(id);
         }
-        
+        setIsDeleting(false);
       } catch (err) {
         console.log(err);
       }

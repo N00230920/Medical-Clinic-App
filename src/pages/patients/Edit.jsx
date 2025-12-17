@@ -6,26 +6,43 @@ import { useNavigate } from "react-router";
 import { useParams } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
 
-// Page: edit existing doctor details.
+// Normalize stored DOB values for a date input.
+const formatDateForInput = (dateOfBirth) => {
+  if (!dateOfBirth) return "";
+  if (typeof dateOfBirth === "number") {
+    const ms = dateOfBirth < 1000000000000 ? dateOfBirth * 1000 : dateOfBirth;
+    return new Date(ms).toISOString().split("T")[0];
+  }
+  const numericValue = Number(dateOfBirth);
+  if (!Number.isNaN(numericValue)) {
+    const ms = numericValue < 1000000000000 ? numericValue * 1000 : numericValue;
+    return new Date(ms).toISOString().split("T")[0];
+  }
+  const parsed = Date.parse(dateOfBirth);
+  if (Number.isNaN(parsed)) return dateOfBirth;
+  return new Date(parsed).toISOString().split("T")[0];
+};
+
 export default function Edit() {
   const [form, setForm] = useState({
     first_name: "",
     last_name: "",
-    specialization: "",
+    date_of_birth: "",
     phone: "",
     email: "",
+    address: "",
   });
 
   const { token } = useAuth();
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // Load doctor details for the edit form.
+  // Load patient details for the edit form.
   useEffect(() => {
-    const fetchDoctor = async () => {
+    const fetchPatient = async () => {
       const options = {
         method: "GET",
-        url: `/doctors/${id}`,
+        url: `/patients/${id}`,
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -34,20 +51,21 @@ export default function Edit() {
       try {
         let response = await axios.request(options);
         console.log(response.data);
-        let doctor = response.data;
+        let patient = response.data;
         setForm({
-            first_name: doctor.first_name,
-            last_name: doctor.last_name,
-            specialisation: doctor.specialisation,
-            phone: doctor.phone,
-            email: doctor.email,
+          first_name: patient.first_name,
+          last_name: patient.last_name,
+          date_of_birth: formatDateForInput(patient.date_of_birth),
+          phone: patient.phone,
+          email: patient.email,
+          address: patient.address,
         });
       } catch (err) {
         console.log(err);
       }
     };
 
-    fetchDoctor();
+    fetchPatient();
   }, []);
 
   // Sync input changes into form state.
@@ -58,11 +76,11 @@ export default function Edit() {
     });
   };
 
-  // Submit the updated doctor to the API.
-  const updateDoctor = async () => {
+  // Submit the updated patient to the API.
+  const updatePatient = async () => {
     const options = {
       method: "PATCH",
-      url: `/doctors/${id}`,
+      url: `/patients/${id}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -72,7 +90,7 @@ export default function Edit() {
     try {
       let response = await axios.request(options);
       console.log(response.data);
-      navigate("/doctors");
+      navigate("/patients");
     } catch (err) {
       console.log(err);
     }
@@ -82,12 +100,12 @@ export default function Edit() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(form);
-    updateDoctor();
+    updatePatient();
   };
 
   return (
     <>
-      <h1>Update Doctor</h1>
+      <h1>Update Patient</h1>
       <form onSubmit={handleSubmit}>
         <Input
           type="text"
@@ -106,10 +124,10 @@ export default function Edit() {
         />
         <Input
           className="mt-2"
-          type="text"
-          placeholder="Specialisation"
-          name="specialisation"
-          value={form.specialisation}
+          type="date"
+          placeholder="Date of Birth"
+          name="date_of_birth"
+          value={form.date_of_birth}
           onChange={handleChange}
         />
         <Input
@@ -126,6 +144,14 @@ export default function Edit() {
           placeholder="Email"
           name="email"
           value={form.email}
+          onChange={handleChange}
+        />
+        <Input
+          className="mt-2"
+          type="text"
+          placeholder="Address"
+          name="address"
+          value={form.address}
           onChange={handleChange}
         />
         <Button className="mt-4 cursor-pointer" variant="outline" type="submit">

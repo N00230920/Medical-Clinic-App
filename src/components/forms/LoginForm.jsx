@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,16 +19,24 @@ import { Label } from "@/components/ui/label";
 export default function LoginForm() {
   const [form, setForm] = useState({});
   const { onLogin } = useAuth();
+  const navigate = useNavigate();
 
   const handleForm = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const submitForm = (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
     console.log(form);
 
-    onLogin(form.email, form.password);
+    const response = await onLogin(form.email, form.password);
+    if (response) {
+      navigate("/", {
+        state: { message: "Login successful.", type: "success" },
+      });
+      return;
+    }
+    toast.error("Invalid email or password.");
   };
 
   return (

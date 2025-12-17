@@ -3,18 +3,16 @@ import {
   IconConfetti,
   IconTheater,
   IconDashboard,
-  IconMicrophone2,
   IconInnerShadowTop,
-  IconMusic,
   IconListCheck,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { useLocation } from "react-router";
 import { useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 import { NavMain } from "@/components/nav-main";
-import { NavExamples } from "@/components/nav-examples";
 import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
@@ -34,9 +32,10 @@ const data = {
   },
   navMain: [
     {
-      title: "Dashboard",
+      title: "Home",
       url: "/",
       icon: IconDashboard,
+      authRequired: true,
     },
     {
       title: "Doctors",
@@ -44,22 +43,12 @@ const data = {
       icon: IconConfetti,
     },
     {
-      title: "Stages",
-      url: "#",
+      title: "Patients",
+      url: "/patients",
       icon: IconTheater,
-    },
-    {
-      title: "Performers",
-      url: "#",
-      icon: IconMicrophone2,
-    },
-    {
-      title: "Shows",
-      url: "#",
-      icon: IconMusic,
-    },
+    }
   ],
-  form: [
+  examples: [
     {
       name: "Forms & Validation",
       url: "/forms",
@@ -70,6 +59,7 @@ const data = {
 
 export function AppSidebar({ ...props }) {
   const location = useLocation();
+  const { user, token } = useAuth();
 
   console.log(location);
 
@@ -89,6 +79,10 @@ export function AppSidebar({ ...props }) {
     }
   }, [message]);
 
+  const navItems = data.navMain.filter(
+    (item) => !item.authRequired || token
+  );
+
   return (
     <>
       <Toaster position="top-center" richColors />
@@ -100,7 +94,7 @@ export function AppSidebar({ ...props }) {
                 asChild
                 className="data-[slot=sidebar-menu-button]:!p-1.5"
               >
-                <a href="#">
+                <a href="/">
                   <IconInnerShadowTop className="!size-5" />
                   <span className="text-base font-semibold">Acme Inc.</span>
                 </a>
@@ -109,11 +103,10 @@ export function AppSidebar({ ...props }) {
           </SidebarMenu>
         </SidebarHeader>
         <SidebarContent>
-          <NavMain items={data.navMain} />
-          <NavExamples items={data.examples} />
+          <NavMain items={navItems} showQuickCreate={!!token} />
         </SidebarContent>
         <SidebarFooter>
-          <NavUser user={data.user} />
+          <NavUser user={user || data.user} />
         </SidebarFooter>
       </Sidebar>
     </>

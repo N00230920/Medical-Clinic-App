@@ -1,11 +1,20 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import axios from "@/config/api";
 import { useNavigate } from 'react-router';
 import { useAuth } from "@/hooks/useAuth";
 
+// Page: create a new doctor.
 export default function Create() {
+    // Form state for doctor details.
     const [form, setForm] = useState({
         first_name: "",
         last_name: "",
@@ -16,6 +25,7 @@ export default function Create() {
     const navigate = useNavigate();
     const { token } = useAuth();
 
+    // Sync input changes into form state.
     const handleChange = (e) => {
         setForm({
             ...form,
@@ -23,6 +33,7 @@ export default function Create() {
         });
     };
 
+    // Submit the doctor to the API.
     const createDoctor = async () => {
 
         const options = {
@@ -47,6 +58,7 @@ export default function Create() {
 
     };
 
+    // Handle form submit.
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(form);
@@ -72,14 +84,26 @@ export default function Create() {
                 value={form.last_name} 
                 onChange={handleChange} 
             />
-            <Input 
-                className="mt-2"
-                type="text" 
-                placeholder="Specialisation" 
-                name="specialisation" 
-                value={form.specialisation} 
-                onChange={handleChange} 
-            />
+            <Select
+                value={form.specialisation}
+                onValueChange={(value) => {
+                    setForm({
+                        ...form,
+                        specialisation: value
+                    });
+                }}
+            >
+                <SelectTrigger className="mt-2">
+                    <SelectValue placeholder="Choose specialisation" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="Dermatologist">Dermatologist</SelectItem>
+                    <SelectItem value="General Practitioner">General Practitioner</SelectItem>
+                    <SelectItem value="Pediatrician">Pediatrician</SelectItem>
+                    <SelectItem value="Podiatrist">Podiatrist</SelectItem>
+                    <SelectItem value="Psychiatrist">Psychiatrist</SelectItem>
+                </SelectContent>
+            </Select>
             <Input 
                 className="mt-2"
                 type="text" 
