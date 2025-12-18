@@ -27,3 +27,6 @@ This template provides a minimal setup to get started on CA2. It has Vite + Reac
 · Tailwind CSS 
 · shadcn/ui 
 · Axios
+
+# Hosted on Netlify
+https://serenityca.netlify.app/
