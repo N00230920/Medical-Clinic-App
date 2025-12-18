@@ -9,13 +9,14 @@ export const useAuth = () => {
     return useContext(AuthContext);
 };
 
+// Function to decode JWT token and extract user info
 const decodeToken = (storedToken) => {
     if (!storedToken) return null;
     try {
         const tokenPayload = storedToken.split(".")[1];
         if (!tokenPayload) return null;
-        const base64 = tokenPayload.replace(/-/g, "+").replace(/_/g, "/");
-        return JSON.parse(atob(base64));
+        const base64 = tokenPayload.replace(/-/g, "+").replace(/_/g, "/"); // Base64 URL decoding
+        return JSON.parse(atob(base64)); 
     } catch (err) {
         console.log(err);
         return null;
@@ -46,6 +47,7 @@ export const AuthProvider = ({ children }) => {
         return decodeToken(localStorage.getItem("token"));
     });
 
+    // Function to store user data in state and localStorage
     const storeUser = (userData) => {
         if (!userData) return;
         setUser(userData);
@@ -62,12 +64,12 @@ export const AuthProvider = ({ children }) => {
             }
         };
 
-        try {
+        try { // Try to make the API request
             let response = await axios.request(options);
             console.log(response.data);
             localStorage.setItem("token", response.data.token);
             setToken(response.data.token);
-            const responseUser = response.data?.user || response.data?.data?.user;
+            const responseUser = response.data?.user || response.data?.data?.user; // Check for user data in response
             if (responseUser) {
                 storeUser(responseUser);
             } else if (response.data?.first_name || response.data?.email) {
@@ -76,7 +78,7 @@ export const AuthProvider = ({ children }) => {
                     last_name: response.data.last_name,
                     email: response.data.email
                 });
-            } else {
+            } else { // Decode token to extract user info
                 const decodedUser = decodeToken(response.data.token);
                 if (decodedUser?.first_name || decodedUser?.email) {
                     storeUser({
@@ -105,7 +107,7 @@ export const AuthProvider = ({ children }) => {
             }
         };
 
-        try {
+        try { 
             let response = await axios.request(options);
             console.log(response.data);
             if (response.data?.token) {
