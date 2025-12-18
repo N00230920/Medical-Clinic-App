@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+// Prescription details page for a specific patient and prescription.
 const formatFieldValue = (field, value) => {
   if (value === null || value === undefined) return "N/A";
   if (field.toLowerCase().includes("date")) {
@@ -54,41 +55,34 @@ export default function PrescriptionsShow() {
   }, [prescriptionId, token]);
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Prescription Details</h1>
-          <p className="text-sm text-muted-foreground">
-            Prescription for patient #{id}
-          </p>
-        </div>
-        <Button asChild variant="outline">
-          <Link to={`/patients/${id}/prescriptions`}>Back</Link>
-        </Button>
-      </div>
-
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Prescription</CardTitle>
-          <CardDescription>
-            {prescription?.medication ||
-              prescription?.drug ||
-              prescription?.name ||
-              "Details"}
-          </CardDescription>
+    <div className="flex w-full justify-center">
+      <Card className="w-full max-w-2xl">
+        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <CardTitle>Prescription Details</CardTitle>
+            <CardDescription>
+              {prescription?.medication ||
+                prescription?.drug ||
+                prescription?.name ||
+                `Prescription for patient #${id}`}
+            </CardDescription>
+          </div>
+          <Button asChild variant="outline" size="sm">
+            <Link to={`/patients/${id}/prescriptions`}>Back</Link>
+          </Button>
         </CardHeader>
-        <CardContent className="space-y-2 text-sm">
+        <CardContent className="space-y-3 text-sm">
           {prescription ? (
             Object.entries(prescription).map(([field, value]) => (
-              <p key={field}>
-                <span className="font-medium capitalize">
-                  {field.replace(/_/g, " ")}:
-                </span>{" "}
-                {formatFieldValue(field, value)}
-              </p>
+              <div key={field}>
+                <p className="text-xs uppercase text-muted-foreground">
+                  {field.replace(/_/g, " ")}
+                </p>
+                <p className="font-medium">{formatFieldValue(field, value)}</p>
+              </div>
             ))
           ) : (
-            <p>Loading...</p>
+            <p className="text-muted-foreground">Loading...</p>
           )}
         </CardContent>
       </Card>

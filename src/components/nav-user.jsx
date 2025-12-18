@@ -29,11 +29,12 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
+// Sidebar user menu with profile summary and logout action.
 export function NavUser({ user }) {
   const { isMobile } = useSidebar()
   const { onLogout } = useAuth();
-  const displayName = user?.name || [user?.first_name].filter(Boolean).join(" ") || "Guest";
-  const displayEmail = user?.email || "No email";
+  const displayName = user?.name || [user?.first_name].filter(Boolean).join(" ") || "Guest"; // Fallback to first name or "Guest"
+  const displayEmail = user?.email || "No email"; // Fallback if email is missing
 
   return (
     <SidebarMenu>

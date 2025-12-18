@@ -4,6 +4,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 
 import { useLocation } from "react-router"
 
+// Header bar with sidebar toggle and a derived page title.
 export function SiteHeader() {
 
   let location = useLocation();

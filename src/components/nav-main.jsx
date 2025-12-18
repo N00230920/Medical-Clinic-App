@@ -10,6 +10,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
+// Primary sidebar navigation with optional quick-create shortcut.
 export function NavMain({
   items,
   showQuickCreate = true,

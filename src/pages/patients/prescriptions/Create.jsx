@@ -3,6 +3,13 @@ import { Link, useNavigate, useParams } from "react-router";
 import axios from "@/config/api";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// Derive editable field list from a sample API record.
 const buildFieldsFromSample = (sample) => {
   if (!sample) return [];
   return Object.keys(sample).filter(
@@ -20,12 +28,14 @@ const buildFieldsFromSample = (sample) => {
   );
 };
 
+// Choose input type based on field name conventions.
 const getInputType = (field) => {
   if (field.toLowerCase().includes("date")) return "date";
   if (field.toLowerCase().endsWith("_id")) return "number";
   return "text";
 };
 
+// Coerce numeric foreign keys to numbers before submit.
 const normalizePayload = (form) => {
   const payload = { ...form };
   Object.keys(payload).forEach((key) => {
@@ -46,6 +56,7 @@ export default function PrescriptionsCreate() {
   const [form, setForm] = useState({ patient_id: id });
 
   useEffect(() => {
+    // Fetch a sample record to infer which fields to render.
     const fetchSample = async () => {
       try {
         const response = await axios.request({
@@ -88,6 +99,7 @@ export default function PrescriptionsCreate() {
   }, [id, token]);
 
   useEffect(() => {
+    // Load doctors for the prescribing doctor select input.
     const fetchDoctors = async () => {
       try {
         const response = await axios.request({
@@ -109,6 +121,7 @@ export default function PrescriptionsCreate() {
   }, [token]);
 
   useEffect(() => {
+    // Load patient-specific diagnoses for optional diagnosis selection.
     const fetchDiagnoses = async () => {
       try {
         const response = await axios.request({
@@ -142,6 +155,7 @@ export default function PrescriptionsCreate() {
   const submitForm = async (e) => {
     e.preventDefault();
     try {
+      // Create the prescription and return to the patient list with feedback.
       const response = await axios.request({
         method: "POST",
         url: "/prescriptions",
@@ -160,6 +174,7 @@ export default function PrescriptionsCreate() {
   };
 
   const orderedFields = useMemo(() => {
+    // Ensure patient_id appears first and remains read-only.
     if (fields.includes("patient_id")) {
       return ["patient_id", ...fields.filter((field) => field !== "patient_id")];
     }
@@ -167,95 +182,101 @@ export default function PrescriptionsCreate() {
   }, [fields]);
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Create Prescription</h1>
-        <Button asChild variant="outline">
-          <Link to={`/patients/${id}/prescriptions`}>Back</Link>
-        </Button>
-      </div>
-
-      <form onSubmit={submitForm} className="max-w-md space-y-4">
-        {orderedFields.map((field) => (
-          <Field key={field}>
-            <FieldLabel className="capitalize">
-              {field.replace(/_/g, " ")}
-            </FieldLabel>
-            {field === "doctor_id" ? (
-              <Select
-                value={form[field] || ""}
-                onValueChange={(value) => onChange(field, value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose doctor" />
-                </SelectTrigger>
-                <SelectContent>
-                  {doctors.map((doctor) => (
-                    <SelectItem key={doctor.id} value={String(doctor.id)}>
-                      {doctor.first_name} {doctor.last_name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            ) : field === "diagnosis_id" ? (
-              <Select
-                value={form[field] || ""}
-                onValueChange={(value) => onChange(field, value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose diagnosis" />
-                </SelectTrigger>
-                <SelectContent>
-                  {diagnoses.map((diagnosis) => (
-                    <SelectItem key={diagnosis.id} value={String(diagnosis.id)}>
-                      {diagnosis.condition || diagnosis.diagnosis || `Diagnosis ${diagnosis.id}`}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            ) : field === "diagnosis" ? (
-              <Select
-                value={form[field] || ""}
-                onValueChange={(value) => onChange(field, value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose diagnosis" />
-                </SelectTrigger>
-                <SelectContent>
-                  {diagnoses.map((diagnosis) => (
-                    <SelectItem
-                      key={diagnosis.id}
-                      value={diagnosis.condition || diagnosis.diagnosis || ""}
-                      disabled={!diagnosis.condition && !diagnosis.diagnosis}
-                    >
-                      {diagnosis.condition || diagnosis.diagnosis || `Diagnosis ${diagnosis.id}`}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            ) : (
-              <Input
-                type={getInputType(field)}
-                value={field === "patient_id" ? id : form[field] || ""}
-                onChange={(e) => onChange(field, e.target.value)}
-                disabled={field === "patient_id"}
-              />
-            )}
-            <FieldDescription>
-              {field === "patient_id"
-                ? "Patient is locked to this record."
-                : field === "doctor_id"
-                  ? "Select the prescribing doctor."
-                  : field === "diagnosis_id" || field === "diagnosis"
-                    ? "Select a diagnosis for this prescription."
-                  : `Enter ${field.replace(/_/g, " ")}.`}
-            </FieldDescription>
-          </Field>
-        ))}
-        <Button type="submit" variant="outline">
-          Create Prescription
-        </Button>
-      </form>
+    <div className="flex w-full justify-center">
+      <Card className="w-full max-w-2xl">
+        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <CardTitle>Create Prescription</CardTitle>
+            <CardDescription>Add a prescription for this patient.</CardDescription>
+          </div>
+          <Button asChild variant="outline" size="sm">
+            <Link to={`/patients/${id}/prescriptions`}>Back</Link>
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={submitForm} className="space-y-4">
+            {orderedFields.map((field) => (
+              <Field key={field}>
+                <FieldLabel className="capitalize">
+                  {field.replace(/_/g, " ")}
+                </FieldLabel>
+                {field === "doctor_id" ? (
+                  <Select
+                    value={form[field] || ""}
+                    onValueChange={(value) => onChange(field, value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose doctor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {doctors.map((doctor) => (
+                        <SelectItem key={doctor.id} value={String(doctor.id)}>
+                          {doctor.first_name} {doctor.last_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : field === "diagnosis_id" ? (
+                  <Select
+                    value={form[field] || ""}
+                    onValueChange={(value) => onChange(field, value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose diagnosis" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {diagnoses.map((diagnosis) => (
+                        <SelectItem key={diagnosis.id} value={String(diagnosis.id)}>
+                          {diagnosis.condition || diagnosis.diagnosis || `Diagnosis ${diagnosis.id}`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : field === "diagnosis" ? (
+                  <Select
+                    value={form[field] || ""}
+                    onValueChange={(value) => onChange(field, value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose diagnosis" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {diagnoses.map((diagnosis) => (
+                        <SelectItem
+                          key={diagnosis.id}
+                          value={diagnosis.condition || diagnosis.diagnosis || ""}
+                          disabled={!diagnosis.condition && !diagnosis.diagnosis}
+                        >
+                          {diagnosis.condition || diagnosis.diagnosis || `Diagnosis ${diagnosis.id}`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <Input
+                    type={getInputType(field)}
+                    value={field === "patient_id" ? id : form[field] || ""}
+                    onChange={(e) => onChange(field, e.target.value)}
+                    disabled={field === "patient_id"}
+                  />
+                )}
+                <FieldDescription>
+                  {field === "patient_id"
+                    ? "Patient is locked to this record."
+                    : field === "doctor_id"
+                      ? "Select the prescribing doctor."
+                      : field === "diagnosis_id" || field === "diagnosis"
+                        ? "Select a diagnosis for this prescription."
+                        : `Enter ${field.replace(/_/g, " ")}.`}
+                </FieldDescription>
+              </Field>
+            ))}
+            <Button type="submit" variant="outline">
+              Create Prescription
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -87,40 +87,43 @@ export default function DoctorAppointmentsShow() {
   }, [appointmentId, token]);
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Appointment Details</h1>
-          <p className="text-sm text-muted-foreground">
-            {doctor
-              ? `For ${doctor.first_name} ${doctor.last_name}`
-              : "For selected doctor"}
-          </p>
-        </div>
-        <Button asChild variant="outline">
-          <Link to={`/doctors/${id}/appointments`}>Back</Link>
-        </Button>
-      </div>
-
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Appointment</CardTitle>
-          <CardDescription>
-            {appointment
-              ? formatAppointmentDate(appointment.appointment_date)
-              : "Loading..."}
-          </CardDescription>
+    <div className="flex w-full justify-center">
+      <Card className="w-full max-w-2xl">
+        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <CardTitle>Appointment Details</CardTitle>
+            <CardDescription>
+              {doctor
+                ? `For ${doctor.first_name} ${doctor.last_name}`
+                : "For selected doctor"}
+            </CardDescription>
+          </div>
+          <Button asChild variant="outline" size="sm">
+            <Link to={`/doctors/${id}/appointments`}>Back</Link>
+          </Button>
         </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <p>
-            Patient:{" "}
-            {patient
-              ? `${patient.first_name} ${patient.last_name}`
-              : appointment?.patient_id || "Unknown"}
-          </p>
+        <CardContent className="space-y-4 text-sm">
+          <div>
+            <p className="text-xs uppercase text-muted-foreground">Date</p>
+            <p className="font-medium">
+              {appointment
+                ? formatAppointmentDate(appointment.appointment_date)
+                : "Loading..."}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs uppercase text-muted-foreground">Patient</p>
+            <p className="font-medium">
+              {patient
+                ? `${patient.first_name} ${patient.last_name}`
+                : appointment?.patient_id || "Unknown"}
+            </p>
+          </div>
           <Button asChild variant="outline">
-          <Link to={`/patients/${appointment?.patient_id || "Unknown"}`}>Patient Info</Link>
-        </Button>
+            <Link to={`/patients/${appointment?.patient_id || "Unknown"}`}>
+              Patient Info
+            </Link>
+          </Button>
         </CardContent>
       </Card>
     </div>

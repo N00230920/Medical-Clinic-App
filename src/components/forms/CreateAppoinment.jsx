@@ -30,31 +30,32 @@ import {
 } from "@/components/ui/popover";
 import { ChevronDownIcon } from "lucide-react";
 
+// Appointment creation form with doctor filtering and date selection.
 const parseAppointmentDate = (value) => {
   if (!value) return null;
   if (value instanceof Date) return value;
   const numericValue = Number(value);
-  if (!Number.isNaN(numericValue)) {
-    const ms = numericValue < 1000000000000 ? numericValue * 1000 : numericValue;
-    return new Date(ms);
+  if (!Number.isNaN(numericValue)) { // Check if value is numeric
+    const ms = numericValue < 1000000000000 ? numericValue * 1000 : numericValue; // Convert to milliseconds if in seconds
+    return new Date(ms); 
   }
   const parsed = Date.parse(value);
-  if (Number.isNaN(parsed)) return null;
+  if (Number.isNaN(parsed)) return null; // Invalid date string
   return new Date(parsed);
 };
 
 export default function CreateAppoinment() {
   const location = useLocation();
   const { token, user } = useAuth();
-  const [dateWindowOpen, setDateWindowOpen] = useState(false);
-  const [appointmentDate, setAppointmentDate] = useState(() =>
+  const [dateWindowOpen, setDateWindowOpen] = useState(false); // Popover state for date picker
+  const [appointmentDate, setAppointmentDate] = useState(() => // Initial date state
     parseAppointmentDate(location.state?.appointmentDate)
   );
   const [doctors, setDoctors] = useState([]);
   const [patients, setPatients] = useState([]);
   const [specialisation, setSpecialisation] = useState("");
   const [doctorId, setDoctorId] = useState(
-    location.state?.doctorId ? String(location.state.doctorId) : ""
+    location.state?.doctorId ? String(location.state.doctorId) : "" // Initial doctor ID state
   );
   const [patientId, setPatientId] = useState(
     user?.id ? String(user.id) : ""
@@ -92,10 +93,11 @@ export default function CreateAppoinment() {
       setDoctorId(String(location.state.doctorId));
     }
     if (location.state.appointmentDate) {
-      setAppointmentDate(parseAppointmentDate(location.state.appointmentDate));
+      setAppointmentDate(parseAppointmentDate(location.state.appointmentDate)); // Parse and set appointment date
     }
   }, [location.state]);
 
+  // Auto-set specialisation based on selected doctor
   useEffect(() => {
     if (!doctorId) return;
     const selectedDoctor = doctors.find(
@@ -121,7 +123,7 @@ export default function CreateAppoinment() {
     }
 
     const appointmentDateValue = appointmentDate
-      ? appointmentDate.toISOString().split("T")[0]
+      ? appointmentDate.toISOString().split("T")[0] // Format as YYYY-MM-DD
       : "";
 
     const payload = {
@@ -151,9 +153,9 @@ export default function CreateAppoinment() {
   };
 
   return (
+    <div className="flex w-full max-w-screen items-center justify-center px-4">
     <Card className="w-full max-w-md mt-4">
       <CardHeader>
-        <CardTitle>Various Form Examples</CardTitle>
       </CardHeader>
       <CardContent>
         <form id="form-demo-2" onSubmit={submitForm}>
@@ -189,7 +191,7 @@ export default function CreateAppoinment() {
               <Select
                 value={doctorId}
                 onValueChange={setDoctorId}
-                disabled={!specialisation}
+                disabled={!specialisation} // Disable if no specialisation selected
               >
                 <SelectTrigger>
                   <SelectValue
@@ -274,5 +276,6 @@ export default function CreateAppoinment() {
         </Field>
       </CardFooter>
     </Card>
+    </div>
   );
 }

@@ -3,6 +3,13 @@ import { Link, useNavigate, useParams } from "react-router";
 import axios from "@/config/api";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -141,53 +148,56 @@ export default function DoctorAppointmentsEdit() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Edit Appointment</h1>
-          <p className="text-sm text-muted-foreground">
-            {doctor
-              ? `For ${doctor.first_name} ${doctor.last_name}`
-              : "For selected doctor"}
-          </p>
-        </div>
-        <Button asChild variant="outline">
-          <Link to={`/doctors/${id}/appointments`}>Back</Link>
-        </Button>
-      </div>
+    <div className="flex w-full justify-center">
+      <Card className="w-full max-w-2xl">
+        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <CardTitle>Edit Appointment</CardTitle>
+            <CardDescription>
+              {doctor
+                ? `For ${doctor.first_name} ${doctor.last_name}`
+                : "For selected doctor"}
+            </CardDescription>
+          </div>
+          <Button asChild variant="outline" size="sm">
+            <Link to={`/doctors/${id}/appointments`}>Back</Link>
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={submitForm} className="space-y-4">
+            <Field>
+              <FieldLabel>Patient</FieldLabel>
+              <Select value={patientId} onValueChange={setPatientId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose patient" />
+                </SelectTrigger>
+                <SelectContent>
+                  {patients.map((patient) => (
+                    <SelectItem key={patient.id} value={String(patient.id)}>
+                      {patient.first_name} {patient.last_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FieldDescription>Select the patient for this appointment.</FieldDescription>
+            </Field>
 
-      <form onSubmit={submitForm} className="max-w-md space-y-4">
-        <Field>
-          <FieldLabel>Patient</FieldLabel>
-          <Select value={patientId} onValueChange={setPatientId}>
-            <SelectTrigger>
-              <SelectValue placeholder="Choose patient" />
-            </SelectTrigger>
-            <SelectContent>
-              {patients.map((patient) => (
-                <SelectItem key={patient.id} value={String(patient.id)}>
-                  {patient.first_name} {patient.last_name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <FieldDescription>Select the patient for this appointment.</FieldDescription>
-        </Field>
+            <Field>
+              <FieldLabel>Appointment Date</FieldLabel>
+              <Input
+                type="date"
+                value={appointmentDate}
+                onChange={(e) => setAppointmentDate(e.target.value)}
+              />
+              <FieldDescription>Select the appointment date.</FieldDescription>
+            </Field>
 
-        <Field>
-          <FieldLabel>Appointment Date</FieldLabel>
-          <Input
-            type="date"
-            value={appointmentDate}
-            onChange={(e) => setAppointmentDate(e.target.value)}
-          />
-          <FieldDescription>Select the appointment date.</FieldDescription>
-        </Field>
-
-        <Button type="submit" variant="outline">
-          Update Appointment
-        </Button>
-      </form>
+            <Button type="submit" variant="outline">
+              Update Appointment
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

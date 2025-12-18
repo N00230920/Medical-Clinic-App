@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
+// Dashboard stat summary cards for key metrics.
 export function SectionCards() {
   return (
     <div

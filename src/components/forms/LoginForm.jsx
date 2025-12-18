@@ -16,13 +16,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+// Login form that uses the auth hook and redirects on success.
 export default function LoginForm() {
   const [form, setForm] = useState({});
   const { onLogin } = useAuth();
   const navigate = useNavigate();
 
   const handleForm = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm({ ...form, [e.target.name]: e.target.value }); // Update form state on input change
   };
 
   const submitForm = async (e) => {
@@ -40,6 +41,8 @@ export default function LoginForm() {
   };
 
   return (
+    <div className="flex w-full max-w-screen items-center justify-center px-4">
+
     <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle>Login to your account</CardTitle>
@@ -48,6 +51,7 @@ export default function LoginForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        
         <form onSubmit={submitForm}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
@@ -61,6 +65,7 @@ export default function LoginForm() {
                 onChange={handleForm}
               />
             </div>
+
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
@@ -87,5 +92,7 @@ export default function LoginForm() {
         </Button>
       </CardFooter>
     </Card>
+    </div>
   );
 }
+

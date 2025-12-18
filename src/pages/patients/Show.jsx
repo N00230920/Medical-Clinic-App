@@ -60,34 +60,44 @@ export default function Show() {
 
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-        <CardTitle>
-          {patient.first_name} {patient.last_name}
-        </CardTitle>
+    <div className="flex w-full justify-center">
+      <Card className="w-full max-w-2xl">
+        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <CardTitle>
+              {patient.first_name} {patient.last_name}
+            </CardTitle>
+            <CardDescription>{patient.email}</CardDescription>
+          </div>
           <Button asChild variant="outline" size="sm">
             <Link to="/patients">Back</Link>
           </Button>
-        </div>
-        <CardDescription>{patient.email}</CardDescription>
-        <div className="mt-2 flex flex-wrap gap-2">
+        </CardHeader>
+        <CardContent className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <p className="text-xs uppercase text-muted-foreground">Phone</p>
+            <p className="text-sm font-medium">{patient.phone || "—"}</p>
+          </div>
+          <div>
+            <p className="text-xs uppercase text-muted-foreground">Date of Birth</p>
+            <p className="text-sm font-medium">
+              {formatDateOfBirth(patient.date_of_birth) || "—"}
+            </p>
+          </div>
+          <div className="sm:col-span-2">
+            <p className="text-xs uppercase text-muted-foreground">Address</p>
+            <p className="text-sm font-medium">{patient.address || "—"}</p>
+          </div>
+        </CardContent>
+        <CardFooter className="flex flex-wrap gap-2">
           <Button asChild variant="outline">
             <Link to={`/patients/${id}/diagnoses`}>View Diagnoses</Link>
           </Button>
           <Button asChild variant="outline">
             <Link to={`/patients/${id}/prescriptions`}>View Prescriptions</Link>
           </Button>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-        <p>Phone: {patient.phone}</p>
-        <p>Date of Birth: {formatDateOfBirth(patient.date_of_birth)}</p>
-        <p>Address: {patient.address}</p>
-        </div>
-      </CardContent>
-      <CardFooter className="flex-col gap-2"></CardFooter>
-    </Card>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }

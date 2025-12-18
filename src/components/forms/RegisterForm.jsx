@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+// Registration form with basic password validation before submission.
 export default function RegisterForm() {
   const [form, setForm] = useState({});
   const { onRegister } = useAuth();
@@ -27,8 +28,8 @@ export default function RegisterForm() {
 
   const isPasswordValid = (password) => {
     if (!password || password.length < 8) return false;
-    const hasLetter = /[A-Za-z]/.test(password);
-    const hasNumber = /\d/.test(password);
+    const hasLetter = /[A-Za-z]/.test(password); // Check for at least one letter
+    const hasNumber = /\d/.test(password); // Check for at least one number
     return hasLetter && hasNumber;
   };
 
@@ -60,6 +61,7 @@ export default function RegisterForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
+
         <form id="register-form" onSubmit={submitForm}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
@@ -73,6 +75,7 @@ export default function RegisterForm() {
                 onChange={handleForm}
               />
             </div>
+
             <div className="grid gap-2">
               <Label htmlFor="last_name">Last Name</Label>
               <Input
@@ -84,6 +87,7 @@ export default function RegisterForm() {
                 onChange={handleForm}
               />
             </div>
+
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -95,6 +99,7 @@ export default function RegisterForm() {
                 onChange={handleForm}
               />
             </div>
+            
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
@@ -109,6 +114,8 @@ export default function RegisterForm() {
             </div>
           </div>
         </form>
+
+        
       </CardContent>
       <CardFooter className="flex-col gap-2">
         <Button

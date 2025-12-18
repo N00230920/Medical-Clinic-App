@@ -109,8 +109,8 @@ export default function DoctorAppointmentsIndex() {
   };
 
   return (
-    <>
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Doctor Appointments</h1>
           <p className="text-sm text-muted-foreground">
@@ -120,73 +120,78 @@ export default function DoctorAppointmentsIndex() {
           </p>
         </div>
         <Button asChild variant="outline">
-          <Link to={`/doctors/${id}/`}>
-            Back to Doctor
-          </Link>
+          <Link to={`/doctors/${id}/`}>Back to Doctor</Link>
         </Button>
       </div>
 
-      <Table className="mt-4">
-        <TableCaption>Appointments for this doctor.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Date</TableHead>
-            <TableHead>Patient</TableHead>
-            <TableHead></TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {appointments.length === 0 ? (
+      <div className="rounded-xl border bg-card shadow-sm">
+        <Table>
+          <TableCaption className="text-muted-foreground">
+            Appointments for this doctor.
+          </TableCaption>
+          <TableHeader className="bg-muted/50">
             <TableRow>
-              <TableCell colSpan={4}>No appointments found.</TableCell>
+              <TableHead>Date</TableHead>
+              <TableHead>Patient</TableHead>
+              <TableHead className="w-[140px] text-right">Actions</TableHead>
             </TableRow>
-          ) : (
-            appointments.map((appointment) => (
-              <TableRow key={appointment.id}>
-                <TableCell>
-                  {formatAppointmentDate(appointment.appointment_date)}
-                </TableCell>
-                <TableCell>
-                  {patientMap[String(appointment.patient_id)] || "Unknown"}
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Button
-                      asChild
-                      className="cursor-pointer hover:border-blue-500"
-                      variant="outline"
-                      size="icon"
-                    >
-                      <Link
-                        to={`/doctors/${id}/appointments/${appointment.id}`}
-                      >
-                        <Eye />
-                      </Link>
-                    </Button>
-                    <Button
-                      asChild
-                      className="cursor-pointer hover:border-blue-500"
-                      variant="outline"
-                      size="icon"
-                    >
-                      <Link
-                        to={`/doctors/${id}/appointments/${appointment.id}/edit`}
-                      >
-                        <Pencil />
-                      </Link>
-                    </Button>
-                    <DeleteBtn
-                      resource="appointments"
-                      id={appointment.id}
-                      onDeleteCallback={onDeleteCallback}
-                    />
-                  </div>
+          </TableHeader>
+          <TableBody>
+            {appointments.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={3}
+                  className="h-24 text-center text-muted-foreground"
+                >
+                  No appointments found.
                 </TableCell>
               </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-    </>
+            ) : (
+              appointments.map((appointment) => (
+                <TableRow key={appointment.id} className="hover:bg-muted/40">
+                  <TableCell>
+                    {formatAppointmentDate(appointment.appointment_date)}
+                  </TableCell>
+                  <TableCell>
+                    {patientMap[String(appointment.patient_id)] || "Unknown"}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <Button
+                        asChild
+                        className="cursor-pointer"
+                        variant="outline"
+                        size="icon"
+                      >
+                        <Link to={`/doctors/${id}/appointments/${appointment.id}`}>
+                          <Eye />
+                        </Link>
+                      </Button>
+                      <Button
+                        asChild
+                        className="cursor-pointer"
+                        variant="outline"
+                        size="icon"
+                      >
+                        <Link
+                          to={`/doctors/${id}/appointments/${appointment.id}/edit`}
+                        >
+                          <Pencil />
+                        </Link>
+                      </Button>
+                      <DeleteBtn
+                        resource="appointments"
+                        id={appointment.id}
+                        onDeleteCallback={onDeleteCallback}
+                      />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
   );
 }

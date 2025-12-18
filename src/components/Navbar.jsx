@@ -10,6 +10,7 @@ import {
   NavigationMenuViewport,
 } from "@/components/ui/navigation-menu"
 
+// Top navigation menu with a doctors dropdown for larger screens.
 export default function Navbar() {
     return (
         <NavigationMenu>

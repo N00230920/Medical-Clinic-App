@@ -24,6 +24,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
+// Sidebar layout with auth-aware navigation items and route-based toast messages.
 const data = {
   user: {
     name: "shadcn",
@@ -96,7 +97,7 @@ export function AppSidebar({ ...props }) {
               >
                 <a href="/">
                   <IconInnerShadowTop className="!size-5" />
-                  <span className="text-base font-semibold">Acme Inc.</span>
+                  <span className="text-base font-semibold">Serenity</span>
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>

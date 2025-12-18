@@ -25,6 +25,7 @@ import {
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
 
+// Interactive area chart with time-range filters and responsive controls.
 export const description = "An interactive area chart"
 
 const chartData = [

@@ -92,6 +92,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 
+// Sortable, filterable table with drag-and-drop rows and detail drawer views.
 export const schema = z.object({
   id: z.number(),
   header: z.string(),

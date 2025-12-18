@@ -5,7 +5,7 @@ export default function Appointments() {
   return (
     <div className="flex flex-col gap-4">
       {/* Header + appointment form */}
-      <div>
+      <div className="text-center">
         <h1 className="text-2xl font-semibold">Make an Appointment</h1>
         <p className="text-sm text-muted-foreground">
           Use the form below to create a new appointment.

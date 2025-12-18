@@ -11,10 +11,11 @@ const pickPrescriptionLabel = (prescription) => {
     prescription?.medication ||
     prescription?.drug ||
     prescription?.name ||
-    `Prescription #${prescription?.id ?? ""}`
+    `Prescription #${prescription?.id ?? ""}` // Fallback to ID if no name available
   );
 };
 
+// Prescription list page for a specific patient.
 const formatPrescriptionDate = (prescription) => {
   const value =
     prescription?.prescription_date || prescription?.date || prescription?.createdAt;
@@ -80,6 +81,7 @@ export default function PrescriptionsIndex() {
     }
   }, [token]);
 
+  // Memoized map of doctor IDs to names for quick lookup
   const doctorMap = useMemo(() => {
     return doctors.reduce((acc, doctor) => {
       acc[String(doctor.id)] = `${doctor.first_name} ${doctor.last_name}`.trim();
@@ -87,6 +89,7 @@ export default function PrescriptionsIndex() {
     }, {});
   }, [doctors]);
 
+  // Callback to remove deleted prescription from state
   const onDeleteCallback = (prescriptionId) => {
     setPrescriptions((current) =>
       current.filter((prescription) => prescription.id !== prescriptionId)
@@ -94,15 +97,15 @@ export default function PrescriptionsIndex() {
   };
 
   return (
-    <>
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Prescriptions</h1>
           <p className="text-sm text-muted-foreground">
             Prescriptions for this patient.
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button asChild variant="outline">
             <Link to={`/patients/${id}`}>Back</Link>
           </Button>
@@ -114,85 +117,87 @@ export default function PrescriptionsIndex() {
         </div>
       </div>
 
-      {prescriptions.length === 0 ? (
-        <p className="text-sm text-muted-foreground mt-4">
-          No prescriptions found.
-        </p>
-      ) : (
-        <div className="mt-4 space-y-3">
-          {prescriptions.map((prescription) => (
-            <details
-              key={prescription.id}
-              className="rounded-md border border-border p-4"
-            >
-              <summary className="cursor-pointer list-none">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="font-medium">
-                    {pickPrescriptionLabel(prescription)}
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    {formatPrescriptionDate(prescription)}
-                  </span>
-                </div>
-              </summary>
-              <div className="mt-3 space-y-2 text-sm">
-                <p>
-                  Doctor:{" "}
-                  {doctorMap[String(prescription.doctor_id)] ||
-                    prescription.doctor_id ||
-                    "N/A"}
-                </p>
-                <p>
-                  Dosage: {prescription.dosage || prescription.dose || "N/A"}
-                </p>
-                <p>
-                  Start Date:{" "}
-                  {formatPrescriptionDate({
-                    prescription_date:
-                      prescription.start_date || prescription.startDate,
-                  }) || "N/A"}
-                </p>
-                <p>
-                  End Date:{" "}
-                  {formatPrescriptionDate({
-                    prescription_date:
-                      prescription.end_date || prescription.endDate,
-                  }) || "N/A"}
-                </p>
-                <div className="flex gap-2 pt-2">
-                  <Button
-                    asChild
-                    className="cursor-pointer hover:border-blue-500"
-                    variant="outline"
-                    size="icon"
-                  >
-                    <Link to={`/patients/${id}/prescriptions/${prescription.id}`}>
-                      <Eye />
-                    </Link>
-                  </Button>
-                  <Button
-                    asChild
-                    className="cursor-pointer hover:border-blue-500"
-                    variant="outline"
-                    size="icon"
-                  >
-                    <Link
-                      to={`/patients/${id}/prescriptions/${prescription.id}/edit`}
+      <div className="rounded-xl border bg-card shadow-sm">
+        {prescriptions.length === 0 ? (
+          <p className="px-6 py-8 text-sm text-muted-foreground">
+            No prescriptions found.
+          </p>
+        ) : (
+          <div className="space-y-3 p-4">
+            {prescriptions.map((prescription) => (
+              <details
+                key={prescription.id}
+                className="rounded-lg border bg-background p-4"
+              >
+                <summary className="cursor-pointer list-none">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="font-medium">
+                      {pickPrescriptionLabel(prescription)}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {formatPrescriptionDate(prescription)}
+                    </span>
+                  </div>
+                </summary>
+                <div className="mt-3 space-y-2 text-sm">
+                  <p>
+                    Doctor:{" "}
+                    {doctorMap[String(prescription.doctor_id)] ||
+                      prescription.doctor_id ||
+                      "N/A"}
+                  </p>
+                  <p>
+                    Dosage: {prescription.dosage || prescription.dose || "N/A"}
+                  </p>
+                  <p>
+                    Start Date:{" "}
+                    {formatPrescriptionDate({
+                      prescription_date:
+                        prescription.start_date || prescription.startDate,
+                    }) || "N/A"}
+                  </p>
+                  <p>
+                    End Date:{" "}
+                    {formatPrescriptionDate({
+                      prescription_date:
+                        prescription.end_date || prescription.endDate,
+                    }) || "N/A"}
+                  </p>
+                  <div className="flex gap-2 pt-2">
+                    <Button
+                      asChild
+                      className="cursor-pointer"
+                      variant="outline"
+                      size="icon"
                     >
-                      <Pencil />
-                    </Link>
-                  </Button>
-                  <DeleteBtn
-                    resource="prescriptions"
-                    id={prescription.id}
-                    onDeleteCallback={onDeleteCallback}
-                  />
+                      <Link to={`/patients/${id}/prescriptions/${prescription.id}`}>
+                        <Eye />
+                      </Link>
+                    </Button>
+                    <Button
+                      asChild
+                      className="cursor-pointer"
+                      variant="outline"
+                      size="icon"
+                    >
+                      <Link
+                        to={`/patients/${id}/prescriptions/${prescription.id}/edit`}
+                      >
+                        <Pencil />
+                      </Link>
+                    </Button>
+                    <DeleteBtn
+                      resource="prescriptions"
+                      id={prescription.id}
+                      onDeleteCallback={onDeleteCallback}
+                    />
+                  </div>
                 </div>
-              </div>
-            </details>
-          ))}
-        </div>
-      )}
-    </>
+              </details>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

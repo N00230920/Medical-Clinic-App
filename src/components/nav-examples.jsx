@@ -10,6 +10,7 @@ import {
   SidebarGroupLabel,
 } from "@/components/ui/sidebar";
 
+// Renders example navigation links with active route highlighting.
 export function NavExamples({ items }) {
   let location = useLocation();
 

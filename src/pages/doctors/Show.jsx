@@ -4,7 +4,6 @@ import { Link, useNavigate, useParams } from 'react-router';
 import { useAuth } from "@/hooks/useAuth";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -86,78 +85,93 @@ export default function Show() {
   }, [appointments]);
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-        <CardTitle>{doctor.first_name} {doctor.last_name}</CardTitle>
+    <div className="flex w-full justify-center">
+      <Card className="w-full max-w-5xl">
+        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <CardTitle className="text-2xl">
+              {doctor.first_name} {doctor.last_name}
+            </CardTitle>
+            <CardDescription>{doctor.specialisation}</CardDescription>
+          </div>
           <Button asChild variant="outline" size="sm">
             <Link to="/doctors">Back</Link>
           </Button>
-        </div>
-        <CardDescription>
-          {doctor.specialisation}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <img src={doctor.image_path} alt={doctor.name} />
-        <div className="mt-4">
-          <h2 className="text-sm font-semibold uppercase text-muted-foreground">
-            Contacts
-          </h2>
-          <div className="mt-2 space-y-1 text-sm">
-            <p>Email: {doctor.email || "N/A"}</p>
-            <p>Phone: {doctor.phone || "N/A"}</p>
+        </CardHeader>
+        <CardContent className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div className="space-y-4">
+            <div className="overflow-hidden rounded-lg border bg-muted/20">
+              {doctor.image_path ? (
+                <img
+                  src={doctor.image_path}
+                  alt={`${doctor.first_name || "Doctor"} profile`}
+                  className="h-48 w-full object-cover"
+                />
+              ) : (
+                <div className="flex h-48 items-center justify-center text-sm text-muted-foreground">
+                  No photo available
+                </div>
+              )}
+            </div>
+            <div>
+              <h2 className="text-xs font-semibold uppercase text-muted-foreground">
+                Contacts
+              </h2>
+              <div className="mt-2 space-y-1 text-sm">
+                <p>Email: {doctor.email || "N/A"}</p>
+                <p>Phone: {doctor.phone || "N/A"}</p>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="mt-6">
-          <h2 className="text-sm font-semibold uppercase text-muted-foreground">
-            Availability
-          </h2>
-          <p className="mt-2 text-xs text-muted-foreground">
-            Booked dates are highlighted.
-          </p>
-          <div className="mt-3">
-            <Calendar
-              mode="single"
-              captionLayout="dropdown"
-              selected={selectedDate}
-              onSelect={setSelectedDate}
-              disabled={bookedDates}
-              modifiers={{ booked: bookedDates }}
-              modifiersClassNames={{
-                booked: "bg-destructive/10 text-destructive line-through",
-              }}
-            />
-          </div>
-          <Button
-            className="mt-4"
-            variant="outline"
-            disabled={!selectedDate}
-            onClick={() =>
-              navigate(`/doctors/${id}/appointments/create`, {
-                state: {
-                  doctorId: id,
-                  appointmentDate: selectedDate?.toISOString(),
-                },
-              })
-            }
-          >
-            Make an Appointment
-          </Button>
-          <Button
-            className="mt-2"
-            variant="outline"
-            onClick={() => navigate(`/doctors/${id}/appointments`)}
-          >
-            Appointments
-          </Button>
-        </div>
-      </CardContent>
-      <CardFooter className="flex-col gap-2">
-      </CardFooter>
-      
-    </Card>
 
-    
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-xs font-semibold uppercase text-muted-foreground">
+                Availability
+              </h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Booked dates are highlighted.
+              </p>
+            </div>
+            <div className="rounded-lg border bg-background p-3">
+              <Calendar
+                mode="single"
+                captionLayout="dropdown"
+                selected={selectedDate}
+                onSelect={setSelectedDate}
+                disabled={bookedDates}
+                modifiers={{ booked: bookedDates }}
+                modifiersClassNames={{
+                  booked: "bg-destructive/10 text-destructive line-through",
+                }}
+              />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                disabled={!selectedDate}
+                onClick={() =>
+                  navigate(`/doctors/${id}/appointments/create`, {
+                    state: {
+                      doctorId: id,
+                      appointmentDate: selectedDate?.toISOString(),
+                    },
+                  })
+                }
+              >
+                Make an Appointment
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => navigate(`/doctors/${id}/appointments`)}
+              >
+                Appointments
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter />
+      </Card>
+    </div>
   );
 }
